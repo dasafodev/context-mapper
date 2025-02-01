@@ -1,0 +1,147 @@
+/* SaludTech de los Alpes (STA) - Domain Model */
+ContextMap STAMap {
+    contains ImageAcquisitionContext
+    contains ImageProcessingContext
+    contains DataDistributionContext
+    contains SecurityComplianceContext
+    contains PartnerManagementContext
+    contains BusinessOperationsContext
+
+    /* Core relationships between domains */
+    ImageAcquisitionContext [U, OHS, PL]->[D] ImageProcessingContext
+
+    ImageProcessingContext [U, OHS, PL]->[D] DataDistributionContext
+
+    /* Security compliance has upstream relationships with all core domains */
+    SecurityComplianceContext [U, OHS, PL]->[D] ImageAcquisitionContext
+
+    SecurityComplianceContext [U, OHS, PL]->[D] ImageProcessingContext
+
+    SecurityComplianceContext [U, OHS, PL]->[D] DataDistributionContext
+
+    /* Partner management relationships */
+    PartnerManagementContext [U, OHS, PL]->[D] ImageAcquisitionContext
+
+    PartnerManagementContext [U, OHS, PL]->[D] DataDistributionContext
+}
+
+/* Core Domain: Image Acquisition */
+BoundedContext ImageAcquisitionContext {
+    Module medicalImage {
+        basePackage = com.sta.imageacquisition
+        Aggregate MedicalImageCollection {
+            Entity MedicalImage {
+                String imageId
+                - ImageMetadata metadata
+            }
+            ValueObject ImageMetadata {
+                String studyId
+                String acquisitionDate
+                String sourceInstitution
+            }
+        }
+    }
+}
+
+/* Core Domain: Image Processing */
+BoundedContext ImageProcessingContext {
+    Module processing {
+        basePackage = com.sta.imageprocessing
+        Aggregate ProcessingPipeline {
+            Entity ProcessedImage {
+                String processedImageId
+                - AnonymizationStatus status
+                - QualityMetrics metrics
+            }
+            ValueObject QualityMetrics {
+                String resolution
+                String contrast
+                String clarity
+            }
+            enum AnonymizationStatus {
+                PENDING, IN_PROGRESS, COMPLETED, FAILED
+            }
+        }
+    }
+}
+
+/* Core Domain: Data Distribution */
+BoundedContext DataDistributionContext {
+    Module distribution {
+        basePackage = com.sta.datadistribution
+        Aggregate DatasetAccess {
+            Entity Dataset {
+                String datasetId
+                // - AccessLevel level
+                - SubscriptionTier tier
+            }
+            ValueObject AccessLevel {
+                String permissions
+                String restrictions
+            }
+            enum SubscriptionTier {
+                STANDARD, PRO, ENTERPRISE
+            }
+        }
+    }
+}
+
+/* Supporting Domain: Security & Compliance */
+BoundedContext SecurityComplianceContext {
+    Module compliance {
+        basePackage = com.sta.security
+        Aggregate ComplianceManagement {
+            Entity ComplianceRule {
+                String ruleId
+                // - Region region
+                - ComplianceStatus status
+            }
+            enum ComplianceStatus {
+                COMPLIANT, NON_COMPLIANT, PENDING_REVIEW
+            }
+        }
+    }
+}
+
+/* Supporting Domain: Partner Management */
+BoundedContext PartnerManagementContext {
+    Module partnership {
+        basePackage = com.sta.partnership
+        Aggregate PartnershipManagement {
+            Entity Partner {
+                String partnerId
+                // - PartnerType type
+                - ContractStatus status
+            }
+            enum PartnerType {
+                HEALTHCARE_PROVIDER, AI_DEVELOPER
+            }
+            enum ContractStatus {
+                ACTIVE, INACTIVE, PENDING
+            }
+        }
+    }
+}
+
+/* Generic Domain: Business Operations */
+BoundedContext BusinessOperationsContext {
+    Module operations {
+        basePackage = com.sta.operations
+        Aggregate BusinessOperations {
+            Entity BillingRecord {
+                String billingId
+                - PaymentStatus status
+                - BillingDetails details
+            }
+            ValueObject BillingDetails {
+                String amount
+                String currency
+            // String description
+            }
+            enum PaymentStatus {
+                PENDING, COMPLETED, FAILED
+            }
+        }
+    }
+}
+
