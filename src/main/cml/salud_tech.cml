@@ -1,145 +1,210 @@
 /* SaludTech de los Alpes (STA) - Domain Model */
-ContextMap STAMap {
-    contains ImageAcquisitionContext
-    contains ImageProcessingContext
-    contains DataDistributionContext
-    contains SecurityComplianceContext
-    contains PartnerManagementContext
-    contains BusinessOperationsContext
-
-    /* Core relationships between domains */
-    ImageAcquisitionContext [U, OHS, PL]->[D] ImageProcessingContext
-
-    ImageProcessingContext [U, OHS, PL]->[D] DataDistributionContext
-
-    /* Security compliance has upstream relationships with all core domains */
-    SecurityComplianceContext [U, OHS, PL]->[D] ImageAcquisitionContext
-
-    SecurityComplianceContext [U, OHS, PL]->[D] ImageProcessingContext
-
-    SecurityComplianceContext [U, OHS, PL]->[D] DataDistributionContext
-
-    /* Partner management relationships */
-    PartnerManagementContext [U, OHS, PL]->[D] ImageAcquisitionContext
-
-    PartnerManagementContext [U, OHS, PL]->[D] DataDistributionContext
-}
-
-/* Core Domain: Image Acquisition */
-BoundedContext ImageAcquisitionContext {
-    Module medicalImage {
-        basePackage = com.sta.imageacquisition
-        Aggregate MedicalImageCollection {
-            Entity MedicalImage {
-                String imageId
-                - ImageMetadata metadata
-            }
-            ValueObject ImageMetadata {
-                String studyId
-                String acquisitionDate
-                String sourceInstitution
-            }
-        }
+/* Domain Parts Definition */
+Domain SaludTech {
+    Subdomain DataPartnership {
+        type = CORE_DOMAIN
     }
-}
 
-/* Core Domain: Image Processing */
-BoundedContext ImageProcessingContext {
-    Module processing {
-        basePackage = com.sta.imageprocessing
-        Aggregate ProcessingPipeline {
-            Entity ProcessedImage {
-                String processedImageId
-                - AnonymizationStatus status
-                - QualityMetrics metrics
-            }
-            ValueObject QualityMetrics {
-                String resolution
-                String contrast
-                String clarity
-            }
-            enum AnonymizationStatus {
-                PENDING, IN_PROGRESS, COMPLETED, FAILED
-            }
-        }
+    Subdomain DataIngestion {
+        type = CORE_DOMAIN
     }
-}
 
-/* Core Domain: Data Distribution */
-BoundedContext DataDistributionContext {
-    Module distribution {
-        basePackage = com.sta.datadistribution
-        Aggregate DatasetAccess {
-            Entity Dataset {
-                String datasetId
-                // - AccessLevel level
-                - SubscriptionTier tier
-            }
-            ValueObject AccessLevel {
-                String permissions
-                String restrictions
-            }
-            enum SubscriptionTier {
-                STANDARD, PRO, ENTERPRISE
-            }
-        }
+    Subdomain AIAccess {
+        type = CORE_DOMAIN
     }
-}
 
-/* Supporting Domain: Security & Compliance */
-BoundedContext SecurityComplianceContext {
-    Module compliance {
-        basePackage = com.sta.security
-        Aggregate ComplianceManagement {
-            Entity ComplianceRule {
-                String ruleId
-                // - Region region
-                - ComplianceStatus status
-            }
-            enum ComplianceStatus {
-                COMPLIANT, NON_COMPLIANT, PENDING_REVIEW
-            }
-        }
+    Subdomain Compliance {
+        type = SUPPORTING_DOMAIN
     }
+
+    Subdomain Billing {
+        type = SUPPORTING_DOMAIN
+    }
+
+    Subdomain Identity {
+        type = GENERIC_SUBDOMAIN
+    }
+
 }
 
-/* Supporting Domain: Partner Management */
-BoundedContext PartnerManagementContext {
+ContextMap SaludTechContextMap {
+    contains DataPartnershipContext
+    contains DataIngestionAndAnonymizationContext
+    contains AIDataAccessContext
+    contains ComplianceAndSecurityContext
+    contains BillingAndMonetizationContext
+    contains IdentityAndUserManagementContext
+
+    /* Define relationships between bounded contexts */
+    DataPartnershipContext [U, OHS, PL]->[D] DataIngestionAndAnonymizationContext
+
+    DataIngestionAndAnonymizationContext [U, OHS, PL]->[D] AIDataAccessContext
+
+    AIDataAccessContext [U, OHS, PL]->[D] BillingAndMonetizationContext
+
+    DataPartnershipContext [U, OHS, PL]->[D] BillingAndMonetizationContext
+
+    ComplianceAndSecurityContext [U, OHS, PL]->[D] DataIngestionAndAnonymizationContext
+
+    IdentityAndUserManagementContext [U, OHS, PL]->[D] AIDataAccessContext
+}
+
+/* Core Domain: Data Partnership */
+BoundedContext DataPartnershipContext implements DataPartnership {
+    domainVisionStatement = "Crear y mantener relaciones con proveedores de salud para obtener imágenes médicas y diagnósticos de forma segura y rentable, asegurando el crecimiento y la fuente principal de datos para STA."
+
     Module partnership {
         basePackage = com.sta.partnership
-        Aggregate PartnershipManagement {
-            Entity Partner {
+        Aggregate DataPartnerManagement {
+            Entity DataPartner {
                 String partnerId
-                // - PartnerType type
-                - ContractStatus status
+                String name
+                String country
+                String contractType
+                String compensationModel
             }
-            enum PartnerType {
-                HEALTHCARE_PROVIDER, AI_DEVELOPER
-            }
-            enum ContractStatus {
-                ACTIVE, INACTIVE, PENDING
+            Entity Contract {
+                String contractId
+                String partnerId
+                Date startDate
+                Date endDate
+                String terms
             }
         }
     }
 }
 
-/* Generic Domain: Business Operations */
-BoundedContext BusinessOperationsContext {
-    Module operations {
-        basePackage = com.sta.operations
-        Aggregate BusinessOperations {
-            Entity BillingRecord {
-                String billingId
-                - PaymentStatus status
-                - BillingDetails details
+/* Core Domain: Data Ingestion & Anonymization */
+BoundedContext DataIngestionAndAnonymizationContext implements DataIngestion {
+    domainVisionStatement = "Ingerir, procesar y anonimizar grandes volúmenes de imágenes médicas, garantizando el cumplimiento regulatorio y la calidad de los datos."
+    
+    Module imageProcessing {
+        basePackage = com.sta.processing
+        Aggregate ImageProcessing {
+            Entity RawMedicalImage {
+                String imageId
+                String partnerId
+                String modality
+                String region
+                String status
+                Date uploadTimestamp
             }
-            ValueObject BillingDetails {
-                String amount
-                String currency
-            // String description
+            Entity AnonymizedMedicalImage {
+                String anonImageId
+                String originalImageId
+                Date anonymizationTimestamp
+                String tokenizedPatientId
+                String metadata
             }
-            enum PaymentStatus {
-                PENDING, COMPLETED, FAILED
+        }
+    }
+}
+
+/* Core Domain: AI Data Access */
+BoundedContext AIDataAccessContext implements AIAccess {
+    domainVisionStatement = "Facilitar la búsqueda, filtrado y descarga de imágenes médicas anonimizadas y sus metadatos para desarrolladores de IA y clientes."
+    
+    Module catalog {
+        basePackage = com.sta.catalog
+        Aggregate DataCatalog {
+            Entity ImageCatalogEntry {
+                String anonImageId
+                String modality
+                String region
+                String pathology
+                String demographicInfo
+                String availableFormats
+            }
+        }
+        Aggregate Subscription {
+            Entity Plan {
+                String planId
+                String planName
+                String featureList
+                BigDecimal price
+            }
+            Entity Subscriber {
+                String subscriberId
+                String planId
+                Date subscriptionStart
+                Date subscriptionEnd
+                String usageMetrics
+            }
+        }
+    }
+}
+
+/* Supporting Domain: Compliance & Security */
+BoundedContext ComplianceAndSecurityContext implements Compliance {
+    domainVisionStatement = "Mantener y monitorear el cumplimiento con HIPAA y otras regulaciones locales, garantizando la seguridad y privacidad de los datos médicos a nivel global."
+    
+    Module compliance {
+        basePackage = com.sta.compliance
+        Aggregate ComplianceManagement {
+            Entity RegulationPolicy {
+                String policyId
+                String region
+                String regulationName
+                String details
+            }
+            Entity ComplianceAudit {
+                String auditId
+                String policyId
+                Date date
+                String findings
+                String status
+            }
+        }
+    }
+}
+
+/* Supporting Domain: Billing & Monetization */
+BoundedContext BillingAndMonetizationContext implements Billing {
+    domainVisionStatement = "Gestionar los planes de suscripción, la facturación y la compensación a proveedores de salud, asegurando la sostenibilidad económica de STA."
+    
+    Module billing {
+        basePackage = com.sta.billing
+        Aggregate Billing {
+            Entity Invoice {
+                String invoiceId
+                String subscriberId
+                BigDecimal amount
+                Date invoiceDate
+                boolean paid
+            }
+            Entity Payment {
+                String paymentId
+                String invoiceId
+                String paymentMethod
+                BigDecimal amount
+                Date paymentDate
+            }
+        }
+        Aggregate PartnerCompensation {
+            Entity CompensationRecord {
+                String recordId
+                String partnerId
+                Long usageVolume
+                BigDecimal payoutAmount
+                Date payoutDate
+            }
+        }
+    }
+}
+
+/* Generic Domain: Identity & User Management */
+BoundedContext IdentityAndUserManagementContext implements Identity {
+    domainVisionStatement = "Proporcionar autenticación, autorización y gestión de cuentas de usuario para toda la plataforma de STA."
+    
+    Module users {
+        basePackage = com.sta.users
+        Aggregate UserDirectory {
+            Entity UserAccount {
+                String userId
+                String username
+                // String email
+                String encryptedPassword
+                String role
             }
         }
     }
