@@ -8,19 +8,7 @@
 | Ines Adela Rojas Leon         | 202311596   | ia.rojas2@uniandes.edu.co       | leinaro       |
 | Santiago Forero              | 201713007   | ds.foreroa@uniandes.edu.co      | dasafodev     |
 
-## Dominios y subdominios
-- [AS-IS](lenguaje-ubicuo/Dominios%20y%20subdominios%20SaludTech%20AS-IS.pdf)
-![AS-IS](lenguaje-ubicuo/Dominios%20y%20subdominios%20SaludTech%20AS-IS.jpg)
-
-- [TO-BE](lenguaje-ubicuo/Dominios%20y%20subdominios%20SaludTech%20TO-BE.pdf)
-![TO-BE](lenguaje-ubicuo/Dominios%20y%20subdominios%20SaludTech%20TO-BE.jpg)
-
-## Lenguaje Ubicuo
-**AS-IS**
-![AS-IS](lenguaje-ubicuo/Event%20Storming%20AS-IS.jpg)
-[AS-IS](lenguaje-ubicuo/Event%20Storming%20AS-IS.pdf)
-**TO-BE**
-![TO-BE](lenguaje-ubicuo/Event%20Storming%20TO-BE.jpg)
-[TO-BE](lenguaje-ubicuo/Event%20Storming%20TO-BE.pdf)
+## Entregas
+- [Entrega 1](entrega-1.md)
 
 ## Estructura del proyecto
