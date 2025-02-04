@@ -49,7 +49,7 @@ Domain GestionImagenesMedicasEntrenamientoIA {
         domainVisionStatement = "Administrar la Creación, modificación y eliminación de Partners"
     }
 
-    Subdomain GestionCuenta  {
+    Subdomain GestionCuenta {
         type = GENERIC_SUBDOMAIN
         domainVisionStatement = "Administrar la Creación, modificación y eliminación de Cuenta de Productos"
     }
@@ -64,11 +64,13 @@ Domain GestionImagenesMedicasEntrenamientoIA {
         domainVisionStatement = "Envio de notificaciones"
     }
 
+ }
+
     BoundedContext ContextoSeguridad implements AutorizacionAutenticacion {
         
     }
 
-    BoundedContext ContextoAdministracionClientes implements AutomatizacionAmbientes, GestionPartners, GestionCuenta {
+    BoundedContext ContextoAdministracionClientes implements AutomatizacionAmbientes, GestionPartners, GestionCuenta{
         
     }
 
@@ -92,10 +94,12 @@ Domain GestionImagenesMedicasEntrenamientoIA {
 
 
     ContextMap SaludTechContextMap {
-    contains ContextoAdministracionClientes
-    contains ContextoIngestaDeDatos 
-    contains ContextoEntregaDatos
-    contains ContextoProcesaminetoDeDatos
+        contains ContextoAdministracionClientes
+        contains ContextoIngestaDeDatos 
+        contains ContextoEntregaDatos
+        contains ContextoProcesamientoDeDatos
+        contains ContextoCumplimiento
+        contains ContextoSeguridad
 
         /* Define relationships between bounded contexts */
     ContextoAdministracionClientes [U, OHS]->[D] ContextoSeguridad
@@ -104,19 +108,11 @@ Domain GestionImagenesMedicasEntrenamientoIA {
 
     ContextoAdministracionClientes [U, OHS]->[D] ContextoEntregaDatos
 
-    ContextoProcesaminetoDeDatos [U, OHS]->[D] ContextoEntregaDatos
+    ContextoProcesamientoDeDatos [U, OHS]->[D] ContextoEntregaDatos
     
-    ContextoIngestaDeDatos [U, OHS]->[D] ContextoProcesaminetoDeDatos
+    ContextoIngestaDeDatos [U, OHS]->[D] ContextoProcesamientoDeDatos
 
-    ContextoCumplimiento [U, OHS]->[D] ContextoProcesaminetoDeDatos
-
-    
-
-
+    ContextoCumplimiento [U, OHS]->[D] ContextoProcesamientoDeDatos
 
 
     }
-
- 
-
-}
