@@ -12,7 +12,7 @@
 - [Entrega 1](entrega-1.md)
 
 ## Estructura del proyecto
-.
+
 ├── README.md
 ├── entrega-1.md
 ├── lenguaje-ubicuo

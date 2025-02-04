@@ -2,11 +2,14 @@
 ## Tabla de contenido
 - [1. Documentación de dominios y sub-dominios](#dominios-y-subdominios)
 - [2. Documentación del lenguaje ubicuo](#lenguaje-ubicuo)
-- [3. Documentación de contextos acotados Item Valor](#contextos-acotados)
+- [3. Documentación de contextos acotados Item Valor](#Contextos-Acotados)
 
 ## 1. Dominios y subdominios
 
-- [ContextMapper](src/main/cml/salud_tech.cml)
+- [ContextMapper AS_IS](src/main/cml/salud_tech_AS_IS.cml)
+
+- [ContextMapper TO_BE](src/main/cml/salud_tech_TO_BE.cml)
+
 
 
 ## 2. Lenguaje Ubicuo
@@ -58,4 +61,10 @@
 
 - ![AS-IS](lenguaje-ubicuo/Contextos%20AS-IS.jpg)
 
+- ![AS-IS](src/main/cml/MapasContextoEntrega1/salud_tech_AS_IS_ContextMap.png)
+
+
 - ![TO-BE](lenguaje-ubicuo/Contextos%20TO-BE.jpg)
+
+- ![TO-BE](src/main/cml/MapasContextoEntrega1/salud_tech_TO_BE_ContextMap.png)
+
