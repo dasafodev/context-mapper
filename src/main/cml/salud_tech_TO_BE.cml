@@ -1,0 +1,122 @@
+/* SaludTech de los Alpes (STA) - Domain Model */
+/* Domain Parts Definition */
+Domain GestionImagenesMedicasEntrenamientoIA {
+    domainVisionStatement = "Gestionar Datos a partir de Procesamiento de Imágenes y diagnosticos médicos"
+
+    Subdomain ProcesamientoImagenesMedicas {
+        type = CORE_DOMAIN
+        domainVisionStatement = "Procesar y enriquecer datos a partir de Imágenes y diagnosticos médicos"
+    }
+
+    Subdomain EntreneamientoExtraccionFeatures {
+        type = CORE_DOMAIN
+        domainVisionStatement = "Entrenar modelos y extraer metadata de la informacion médica"
+    }
+
+    Subdomain AutomatizacionAmbientes {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Automatizar la generación de ambientes privados para el procesamiento de datos en un aregion determinada"
+    }
+
+    Subdomain PresentacionDatosDescarga {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Presentar informacion para poder filtrar y descargar una selección de datos"
+    }
+
+    Subdomain AutorizacionAutenticacion {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Autorizar y autenticar usuarios y Partners"
+    }
+
+    Subdomain RecoleccionDatosMedicos {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Recolectar datos de diferentes fuentes para iniciar el proceso de Procesamiento"
+    }
+    
+    Subdomain AnonimizacionVerificacion {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Anonimizar y verificar la información después de la ingesta"
+    }
+
+    Subdomain Cumplimiento {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Cumplir con las reglas de manejo de datos de cada pais"
+    }
+
+    
+    Subdomain GestionPartners {
+        type = SUPPORTING_DOMAIN
+        domainVisionStatement = "Administrar la Creación, modificación y eliminación de Partners"
+    }
+
+    Subdomain GestionCuenta  {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Administrar la Creación, modificación y eliminación de Cuenta de Productos"
+    }
+
+    Subdomain AlmacenamientoEstructurado {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Administrar la Creación, modificación y eliminación de datos estructurados"
+    }
+
+     Subdomain Notificaciones {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Envio de notificaciones"
+    }
+
+    BoundedContext ContextoSeguridad implements AutorizacionAutenticacion {
+        
+    }
+
+    BoundedContext ContextoAdministracionClientes implements AutomatizacionAmbientes, GestionPartners, GestionCuenta {
+        
+    }
+
+    BoundedContext ContextoIngestaDeDatos implements RecoleccionDatosMedicos, AnonimizacionVerificacion {
+
+    }
+
+    BoundedContext ContextoEntregaDatos implements PresentacionDatosDescarga{
+
+    }
+
+    BoundedContext ContextoProcesamientoDeDatos implements ProcesamientoImagenesMedicas, EntreneamientoExtraccionFeatures, AlmacenamientoEstructurado {
+
+    }
+
+    BoundedContext ContextoCumplimiento implements Cumplimiento {
+
+    }
+
+
+
+
+    ContextMap SaludTechContextMap {
+    contains ContextoAdministracionClientes
+    contains ContextoIngestaDeDatos 
+    contains ContextoEntregaDatos
+    contains ContextoProcesaminetoDeDatos
+
+        /* Define relationships between bounded contexts */
+    ContextoAdministracionClientes [U, OHS]->[D] ContextoSeguridad
+ 
+    ContextoAdministracionClientes [U, OHS]->[D] ContextoIngestaDeDatos
+
+    ContextoAdministracionClientes [U, OHS]->[D] ContextoEntregaDatos
+
+    ContextoProcesaminetoDeDatos [U, OHS]->[D] ContextoEntregaDatos
+    
+    ContextoIngestaDeDatos [U, OHS]->[D] ContextoProcesaminetoDeDatos
+
+    ContextoCumplimiento [U, OHS]->[D] ContextoProcesaminetoDeDatos
+
+    
+
+
+
+
+    }
+
+ 
+
+}

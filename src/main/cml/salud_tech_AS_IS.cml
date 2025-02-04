@@ -1,0 +1,88 @@
+/* SaludTech de los Alpes (STA) - Domain Model */
+/* Domain Parts Definition */
+Domain GestionImagenesMedicasEntrenamientoIA {
+    domainVisionStatement = "Gestionar Datos a partir de Procesamiento de Imágenes y diagnosticos médicos"
+
+    Subdomain ProcesamientoImagenesMedicas {
+        type = CORE_DOMAIN
+        domainVisionStatement = "Procesar y enriquecer datos a partir de Imágenes y diagnosticos médicos"
+    }
+
+    Subdomain EntreneamientoExtraccionFeatures {
+        type = CORE_DOMAIN
+        domainVisionStatement = "Entrenar modelos y extraer metadata de la informacion médica"
+    }
+
+    Subdomain RecoleccionDatosMedicos {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Recolectar datos de diferentes fuentes para iniciar el proceso de Procesamiento"
+    }
+
+    Subdomain PresentacionDatosDescarga {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Presentar informacion para poder filtrar y descargar una selección de datos"
+    }
+
+    
+    Subdomain AnonimizacionVerificacion {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Anonimizar y verificar la información después de la ingesta"
+    }
+
+    
+    Subdomain GestionPartners {
+        type = SUPPORTING_DOMAIN
+        domainVisionStatement = "Administrar la Creación, modificación y eliminación de Partners"
+    }
+
+    Subdomain GestionCuenta  {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Administrar la Creación, modificación y eliminación de Cuenta de Productos"
+    }
+
+    Subdomain AlmacenamientoEstructurado {
+        type = GENERIC_SUBDOMAIN
+        domainVisionStatement = "Administrar la Creación, modificación y eliminación de datos estructurados"
+    }
+
+    BoundedContext ContextoAdministracionClientes implements GestionPartners, GestionCuenta {
+        
+    }
+
+    BoundedContext ContextoIngestaDeDatos implements RecoleccionDatosMedicos, AnonimizacionVerificacion {
+
+    }
+
+    BoundedContext ContextoEntregaDatos implements PresentacionDatosDescarga{
+
+    }
+
+    BoundedContext ContextoProcesamientoDeDatos implements ProcesamientoImagenesMedicas, EntreneamientoExtraccionFeatures, AlmacenamientoEstructurado {
+
+    }
+
+
+
+
+    ContextMap SaludTechContextMap {
+    contains ContextoAdministracionClientes
+    contains ContextoIngestaDeDatos 
+    contains ContextoEntregaDatos
+    contains ContextoProcesaminetoDeDatos
+
+        /* Define relationships between bounded contexts */
+    ContextoAdministracionClientes [U, OHS]->[D] ContextoIngestaDeDatos
+
+    ContextoIngestaDeDatos [U, OHS]->[D] ContextoProcesaminetoDeDatos
+
+    ContextoProcesaminetoDeDatos [U, OHS]->[D] ContextoEntregaDatos
+
+    ContextoAdministracionClientes [U, OHS]->[D] ContextoEntregaDatos
+
+
+
+    }
+
+ 
+
+}
