@@ -2,7 +2,7 @@
 ## Tabla de contenido
 - [1. Documentación de dominios y sub-dominios](#dominios-y-subdominios)
 - [2. Documentación del lenguaje ubicuo](#lenguaje-ubicuo)
-- [3. Documentación de contextos acotados Item Valor](https://github.com/dasafodev/context-mapper/blob/master/entrega-1.md#3-contextos-acotadoss)
+- [3. Documentación de contextos acotados Item Valor](https://github.com/dasafodev/context-mapper/blob/master/entrega-1.md#3-contextos-acotados)
 
 ## 1. Dominios y subdominios
 
@@ -56,7 +56,7 @@
 
 ![BigPicture - TO-BE](lenguaje-ubicuo/Event%20Storming%20TO-BE.jpg)
 
-## 3. Contextos-Acotados 
+## 3. Contextos Acotados 
 [Miro](https://miro.com/app/board/uXjVLkjyAUI=/?share_link_id=883331298013)
 
 - ![AS-IS](lenguaje-ubicuo/Contextos%20AS-IS.jpg)
